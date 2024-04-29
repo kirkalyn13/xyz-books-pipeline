@@ -1,7 +1,18 @@
 package main
 
-import "fmt"
+import (
+	"log"
+
+	"github.com/kirkalyn13/xyz-books-pipeline/pkg/writer"
+)
 
 func main() {
-	fmt.Println("XYZ Books Pipeline")
+	log.Println("Starting XYZ Books Pipeline")
+	log.Println("Waiting for data update...")
+
+	err := writer.WriteCsv()
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
