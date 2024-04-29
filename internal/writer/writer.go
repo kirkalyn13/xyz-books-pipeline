@@ -12,7 +12,7 @@ var (
 )
 
 // WriteCsv writes new data to data CSV File
-func WriteCsv() error {
+func WriteCsv(newData []string) error {
 	if !dataCsvExists() {
 		err := initCsvFile()
 
@@ -20,7 +20,6 @@ func WriteCsv() error {
 			return err
 		}
 	} else {
-		newData := []string{"American Elf", "Joel Hartse, Hannah P. Templer", "9781891830853", "1891830856", "2004", "Paste Magazine", "Book 2", "1000"}
 		err := updateCsvFile(newData)
 
 		if err != nil {
