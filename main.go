@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/kirkalyn13/xyz-books-pipeline/pkg/writer"
+	"github.com/kirkalyn13/xyz-books-pipeline/internal/writer"
 )
 
 func main() {
