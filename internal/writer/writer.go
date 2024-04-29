@@ -11,6 +11,7 @@ var (
 	header = []string{"timestamp", "title", "author", "isbn13", "isbn10", "publicationYear", "publisher", "edition", "price"}
 )
 
+// WriteCsv writes new data to data CSV File
 func WriteCsv() error {
 	if !dataCsvExists() {
 		err := initCsvFile()
@@ -30,6 +31,7 @@ func WriteCsv() error {
 	return nil
 }
 
+// dataCsvExists checks if the data csv exists
 func dataCsvExists() bool {
 	if _, err := os.Stat(csvFile); os.IsNotExist(err) {
 		return false
@@ -37,6 +39,7 @@ func dataCsvExists() bool {
 	return true
 }
 
+// initCsvFile initializes book data csv file
 func initCsvFile() error {
 	data := [][]string{header}
 
@@ -61,6 +64,7 @@ func initCsvFile() error {
 	return nil
 }
 
+// updateCsvFile appends new data to csv file
 func updateCsvFile(newData []string) error {
 	file, err := os.OpenFile(csvFile, os.O_WRONLY|os.O_APPEND, 0644)
 
