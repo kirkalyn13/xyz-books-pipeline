@@ -1,8 +1,8 @@
 package pipeline
 
 import (
-	"github.com/kirkalyn13/xyz-books-pipeline/internal/service"
 	"github.com/kirkalyn13/xyz-books-pipeline/internal/writer"
+	"github.com/kirkalyn13/xyz-books-pipeline/pkg/service"
 )
 
 // UpdateISBNs retrieves book data and updates the CSV file
