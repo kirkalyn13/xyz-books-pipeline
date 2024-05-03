@@ -1,48 +1,97 @@
 package isbn
 
-import "testing"
-
-type (
-	ConvertResult struct {
-		input    string
-		expected string
-	}
+import (
+	"testing"
 )
 
-func TestConvertISBN10ToISBN13(t *testing.T) {
-	tests := []ConvertResult{
-		{"0596000480", "9780596000484"},
-		{"0321751043", "9780321751041"},
-		{"0131103628", "9780131103627"},
+func TestToISBN13(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{"0132350882", "9780132350884"},
+		{"1593275846", "9781593275846"},
+		{"1449325947", "9781449325947"},
+		{"054792822X", "9780547928227"},
 	}
 
 	for _, test := range tests {
-		result, err := ConvertISBN10ToISBN13(test.input)
-		if err != nil {
-			t.Errorf("Error converting ISBN-10 to ISBN-13: %v", err)
-		}
+		isbn13, err := ToISBN13(test.input)
 
-		if result != test.expected {
-			t.Errorf("ISBN-10 to ISBN-13 conversion failed for input %s. Expected: %s, Got: %s", test.input, test.expected, result)
+		if err != nil {
+			t.Errorf("Test Failed: Error Occurred: %v", err)
+		}
+		if isbn13 != test.expected {
+			t.Errorf("Test Failed: ISBN-13 conversion incorrect. Expected: %s, Got: %s", test.expected, isbn13)
 		}
 	}
 }
 
-func TestConvertISBN13ToISBN10(t *testing.T) {
-	tests := []ConvertResult{
-		{"9780596000484", "0596000480"},
-		{"9780321751041", "0321751043"},
-		{"9780131103627", "0131103628"},
+func TestToISBN10(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{"9780132350884", "0132350882"},
+		{"9781593275846", "1593275846"},
+		{"9781449325947", "1449325947"},
+		{"9780547928227", "054792822X"},
 	}
 
 	for _, test := range tests {
-		result, err := ConvertISBN13ToISBN10(test.input)
-		if err != nil {
-			t.Errorf("Error converting ISBN-13 to ISBN-10: %v", err)
-		}
+		isbn10, err := ToISBN10(test.input)
 
-		if result != test.expected {
-			t.Errorf("ISBN-13 to ISBN-10 conversion failed for input %s. Expected: %s, Got: %s", test.input, test.expected, result)
+		if err != nil {
+			t.Errorf("Test Failed: Error Occurred: %v", err)
+		}
+		if isbn10 != test.expected {
+			t.Errorf("Test Failed: ISBN-10 conversion incorrect. Expected: %s, Got: %s", test.expected, isbn10)
+		}
+	}
+}
+
+func TestCheckDigitISBN13(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected int
+	}{
+		{"978013235088", 4},
+		{"978159327584", 6},
+		{"978144932594", 7},
+		{"978054792822", 7},
+	}
+
+	for _, test := range tests {
+		checkDigit, err := checkDigitISBN13(test.input)
+
+		if err != nil {
+			t.Errorf("Test Failed: Error Occurred: %v", err)
+		}
+		if checkDigit != test.expected {
+			t.Errorf("Test Failed: Incorrect check digit. Expected: %v, Got: %v", test.expected, checkDigit)
+		}
+	}
+}
+
+func TestCheckDigitISBN10(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected int
+	}{
+		{"013235088", 2},
+		{"159327584", 6},
+		{"144932594", 7},
+		{"054792822", 10},
+	}
+
+	for _, test := range tests {
+		checkDigit, err := checkDigitISBN10(test.input)
+
+		if err != nil {
+			t.Errorf("Test Failed: Error Occurred: %v", err)
+		}
+		if checkDigit != test.expected {
+			t.Errorf("Test Failed: Incorrect check digit. Expected: %v, Got: %v", test.expected, checkDigit)
 		}
 	}
 }

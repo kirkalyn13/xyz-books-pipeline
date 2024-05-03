@@ -1,68 +1,91 @@
 package isbn
 
 import (
-	"fmt"
-	"math"
+	"errors"
 	"strconv"
+	"strings"
 )
 
-// ConvertISBN10ToISBN13 converts an ISBN-10 string to an ISBN-13 string.
-func ConvertISBN10ToISBN13(isbn10 string) (string, error) {
+func ToISBN13(isbn10 string) (string, error) {
+	isbn10 = strings.ReplaceAll(isbn10, "-", "")
+	isbn10 = strings.ReplaceAll(isbn10, " ", "")
+
 	if len(isbn10) != 10 {
-		return "", fmt.Errorf("invalid ISBN-10 length")
+		return "", errors.New("Invalid ISBN-10")
 	}
 
-	isbn10Prefix := isbn10[:9]
-	isbn13Prefix := "978" + isbn10Prefix
+	isbnSubstr := "978" + isbn10[:9]
 
-	checkDigit, err := getCheckDigit(isbn13Prefix, true)
+	checkDigit, err := checkDigitISBN13(isbnSubstr)
+
 	if err != nil {
 		return "", err
 	}
 
-	return isbn13Prefix + checkDigit, nil
+	isbn13 := isbnSubstr + strconv.Itoa(checkDigit)
+
+	return isbn13, nil
 }
 
-// ConvertISBN13ToISBN10 converts an ISBN-13 string to an ISBN-10 string.
-func ConvertISBN13ToISBN10(isbn13 string) (string, error) {
+func ToISBN10(isbn13 string) (string, error) {
+	isbn13 = strings.ReplaceAll(isbn13, "-", "")
+	isbn13 = strings.ReplaceAll(isbn13, " ", "")
+
 	if len(isbn13) != 13 {
-		return "", fmt.Errorf("invalid ISBN-13 length")
+		return "", errors.New("Invalid ISBN-13")
 	}
 
-	isbn10Prefix := isbn13[3:12]
+	if !strings.HasPrefix(isbn13, "978") && !strings.HasPrefix(isbn13, "979") {
+		return "", errors.New("Invalid ISBN-13 prefix")
+	}
 
-	checkDigit, err := getCheckDigit(isbn10Prefix, false)
+	isbnSubstr := isbn13[3:12]
+	checkDigit, err := checkDigitISBN10(isbnSubstr)
+
 	if err != nil {
 		return "", err
 	}
 
-	return isbn10Prefix + checkDigit, nil
+	isbn10 := isbnSubstr + strconv.Itoa(checkDigit)
+
+	if checkDigit == 10 {
+		isbn10 = isbnSubstr + "X"
+	}
+
+	return isbn10, nil
 }
 
-// getCheckDigit calculates the check digit for an ISBN-13 or ISBN-10 prefix.
-func getCheckDigit(prefix string, isISBN13 bool) (string, error) {
-	var sum int
-	var modVal int
-	var constantVal int
+func checkDigitISBN13(isbnSubstr string) (int, error) {
+	checkDigit := 0
 
-	for i, digit := range prefix {
-		digitValue, err := strconv.Atoi(string(digit))
-
+	for i, c := range isbnSubstr {
+		digit, err := strconv.Atoi(string(c))
 		if err != nil {
-			return "", fmt.Errorf("invalid digit in ISBN: %v", err)
+			return 0, err
 		}
-
-		sum += digitValue * (i%2*2 + 1)
+		if i%2 == 0 {
+			checkDigit += digit
+		} else {
+			checkDigit += digit * 3
+		}
 	}
 
-	if isISBN13 {
-		constantVal = 10
-		modVal = 10
-	} else {
-		constantVal = 0
-		modVal = 11
-	}
+	checkDigit = 10 - (checkDigit % 10)
 
-	checkDigit := math.Abs(float64((constantVal - (sum % modVal)) % modVal))
-	return strconv.Itoa(int(checkDigit)), nil
+	return checkDigit, nil
+}
+
+func checkDigitISBN10(isbnSubstr string) (int, error) {
+	checkDigit := 0
+
+	for i, c := range isbnSubstr {
+		digit, err := strconv.Atoi(string(c))
+		if err != nil {
+			return 0, err
+		}
+		checkDigit += (i + 1) * digit
+	}
+	checkDigit = checkDigit % 11
+
+	return checkDigit, nil
 }
