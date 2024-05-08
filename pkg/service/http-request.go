@@ -15,8 +15,8 @@ const (
 )
 
 // Get sends a GET request to the url
-func Get() (model.Response, error) {
-	var response model.Response
+func Get() (model.Book, error) {
+	var response model.Book
 
 	resp, err := http.Get(url)
 	if err != nil {

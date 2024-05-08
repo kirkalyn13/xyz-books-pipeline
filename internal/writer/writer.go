@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	header = []string{"timestamp", "title", "author", "isbn13", "isbn10", "publicationYear", "publisher", "edition", "price"}
+	header = []string{"timestamp", "title", "authors", "isbn13", "isbn10", "publicationYear", "publisher", "edition", "price"}
 )
 
 // WriteCsv writes new data to data CSV File
