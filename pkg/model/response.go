@@ -19,17 +19,15 @@ type (
 
 	// Author response struct
 	Author struct {
-		ID         uint    `json:"id,omitempty"`
-		FirstName  string  `json:"first_name,omitempty"`
-		LastName   string  `json:"last_name,omitempty"`
-		MiddleName string  `json:"middle_name"`
-		Books      []*Book `json:"books,omitempty"`
+		ID         uint   `json:"id,omitempty"`
+		FirstName  string `json:"first_name,omitempty"`
+		LastName   string `json:"last_name,omitempty"`
+		MiddleName string `json:"middle_name"`
 	}
 
 	// Publisher response struct
 	Publisher struct {
-		ID    uint    `json:"id,omitempty"`
-		Name  string  `json:"name,omitempty"`
-		Books []*Book `json:"books,omitempty"`
+		ID   uint   `json:"id,omitempty"`
+		Name string `json:"name,omitempty"`
 	}
 )
