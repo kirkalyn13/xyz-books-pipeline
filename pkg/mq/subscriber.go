@@ -37,7 +37,7 @@ func InitSubscriber(queueName string) {
 	go func() {
 		for d := range msgs {
 			log.Printf("Received: %s\n", d.Body)
-			err := service.UpdateISBNs()
+			err := service.UpdateISBNs(d.Body)
 
 			if err != nil {
 				log.Printf("Error when updating ISBNs: %s \n", err)
