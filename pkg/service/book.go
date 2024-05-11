@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	appServer = "http://localhost:8081/api/v1/books"
+	appServer = "http://localhost:8080/api/v1/books"
 )
 
 // UpdateISBNs retrieves book data and updates the CSV file
