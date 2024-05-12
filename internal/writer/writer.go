@@ -19,12 +19,12 @@ func WriteCsv(newData []string) error {
 		if err != nil {
 			return err
 		}
-	} else {
-		err := updateCsvFile(newData)
+	}
 
-		if err != nil {
-			return err
-		}
+	err := updateCsvFile(newData)
+
+	if err != nil {
+		return err
 	}
 
 	return nil

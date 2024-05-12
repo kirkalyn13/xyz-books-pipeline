@@ -1,6 +1,8 @@
 package writer
 
-const (
+import "path/filepath"
+
+var (
 	// csvFile is book data CSV file path
-	csvFile = "book-data.csv"
+	csvFile = filepath.Join(".", "output", "book-data.csv")
 )
