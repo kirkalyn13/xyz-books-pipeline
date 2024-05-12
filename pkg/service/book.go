@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"path/filepath"
 	"strings"
 
 	"github.com/kirkalyn13/xyz-books-pipeline/internal/writer"
@@ -15,6 +16,11 @@ import (
 
 const (
 	appServer = "http://localhost:8080/api/v1/books"
+)
+
+var (
+	csvFile = filepath.Join(".", "output", "book-data.csv")
+	header  = []string{"timestamp", "title", "authors", "isbn13", "isbn10", "publicationYear", "publisher", "edition", "price"}
 )
 
 // UpdateISBNs retrieves book data and updates the CSV file
@@ -27,6 +33,7 @@ func UpdateISBNs(data []byte) error {
 		return err
 	}
 
+	log.Printf("Received: ID: %v, Title: %s, ISBN13: %s, ISBN10: %s \n", book.ID, book.Title, book.ISBN13, book.ISBN10)
 	if book.ISBN10 == "" {
 		isbn10, err := isbn.ToISBN10(book.ISBN13)
 
@@ -58,7 +65,7 @@ func UpdateISBNs(data []byte) error {
 		fmt.Sprint(int(book.ListPrice)),
 	}
 
-	err = writer.WriteCsv(newData)
+	err = writer.WriteCsv(newData, csvFile, header)
 
 	if err != nil {
 		return err

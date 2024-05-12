@@ -8,20 +8,20 @@ import (
 )
 
 var (
-	header = []string{"timestamp", "title", "authors", "isbn13", "isbn10", "publicationYear", "publisher", "edition", "price"}
+// header = []string{"timestamp", "title", "authors", "isbn13", "isbn10", "publicationYear", "publisher", "edition", "price"}
 )
 
 // WriteCsv writes new data to data CSV File
-func WriteCsv(newData []string) error {
-	if !dataCsvExists() {
-		err := initCsvFile()
+func WriteCsv(newData []string, csvFile string, header []string) error {
+	if !dataCsvExists(csvFile) {
+		err := initCsvFile(csvFile, header)
 
 		if err != nil {
 			return err
 		}
 	}
 
-	err := updateCsvFile(newData)
+	err := updateCsvFile(newData, csvFile)
 
 	if err != nil {
 		return err
@@ -31,7 +31,7 @@ func WriteCsv(newData []string) error {
 }
 
 // dataCsvExists checks if the data csv exists
-func dataCsvExists() bool {
+func dataCsvExists(csvFile string) bool {
 	if _, err := os.Stat(csvFile); os.IsNotExist(err) {
 		return false
 	}
@@ -39,7 +39,7 @@ func dataCsvExists() bool {
 }
 
 // initCsvFile initializes book data csv file
-func initCsvFile() error {
+func initCsvFile(csvFile string, header []string) error {
 	data := [][]string{header}
 
 	file, err := os.Create(csvFile)
@@ -64,7 +64,7 @@ func initCsvFile() error {
 }
 
 // updateCsvFile appends new data to csv file
-func updateCsvFile(newData []string) error {
+func updateCsvFile(newData []string, csvFile string) error {
 	file, err := os.OpenFile(csvFile, os.O_WRONLY|os.O_APPEND, 0644)
 
 	if err != nil {
