@@ -17,7 +17,7 @@ XYZ Books Pipeline to check and update incoming ISBNs from newly added books fro
 1. Run `./main` on the folder where the executable is located (preferrably the root folder of the project).
 2. The output CSV file can be found on `/xyz-books-pipeline/output/book-data.csv` .
 
-**Note:** If the Rabbit MQ instance is up and running and the message queues are existing, the pipeline may need to restart to start receiving the queued messages.
+**Note:** If the Rabbit MQ instance is up and running and messages are queued, the pipeline may need to restart to start receiving the queued messages.
 
 ## Rabbit MQ instance
 - **URL** - http://localhost:15672/
