@@ -8,7 +8,7 @@ import (
 )
 
 func InitSubscriber(queueName string) {
-	conn, err := amqp.Dial(server)
+	conn, err := amqp.Dial(Server)
 
 	if err != nil {
 		log.Println(err)
@@ -47,4 +47,16 @@ func InitSubscriber(queueName string) {
 	log.Println("Successfully connected to Rabbit MQ instance.")
 	log.Println(" [*] - Waiting for messages...")
 	<-forever
+}
+
+// CheckMQ checks if RabbitMQ is up and running
+func CheckMQ(url string) bool {
+	conn, err := amqp.Dial(url)
+
+	if err != nil {
+		return false
+	}
+	defer conn.Close()
+
+	return true
 }

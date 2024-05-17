@@ -11,6 +11,9 @@ func main() {
 	log.Println("Starting XYZ Books Pipeline")
 	log.Println("Waiting for data update...")
 
-	service.EvaluateISBNs()
-	mq.InitSubscriber("xyz-books")
+	go service.EvaluateISBNs()
+
+	if mq.CheckMQ(mq.Server) {
+		mq.InitSubscriber("xyz-books")
+	}
 }
