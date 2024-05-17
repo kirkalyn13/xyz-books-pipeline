@@ -30,4 +30,9 @@ type (
 		ID   uint   `json:"id,omitempty"`
 		Name string `json:"name,omitempty"`
 	}
+
+	// BooksResponse response struct
+	BooksResponse struct {
+		Books []Book `json:"books"`
+	}
 )

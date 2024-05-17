@@ -4,14 +4,16 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"path/filepath"
-	"strings"
+	"time"
 
 	"github.com/kirkalyn13/xyz-books-pipeline/internal/writer"
 	"github.com/kirkalyn13/xyz-books-pipeline/pkg/isbn"
 	"github.com/kirkalyn13/xyz-books-pipeline/pkg/model"
+	"github.com/kirkalyn13/xyz-books-pipeline/pkg/util"
 )
 
 const (
@@ -19,8 +21,9 @@ const (
 )
 
 var (
-	csvFile = filepath.Join(".", "output", "book-data.csv")
-	header  = []string{"timestamp", "title", "authors", "isbn13", "isbn10", "publicationYear", "publisher", "edition", "price"}
+	csvFile  = filepath.Join(".", "output", "book-data.csv")
+	header   = []string{"timestamp", "title", "authors", "isbn13", "isbn10", "publicationYear", "publisher", "edition", "price"}
+	duration = 60 * time.Second // book evaluation duration in seconds
 )
 
 // UpdateISBNs retrieves book data and updates the CSV file
@@ -34,6 +37,74 @@ func UpdateISBNs(data []byte) error {
 	}
 
 	log.Printf("Received: ID: %v, Title: %s, ISBN13: %s, ISBN10: %s \n", book.ID, book.Title, book.ISBN13, book.ISBN10)
+
+	err = bookToCSV(book)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// EvaluateISBNs reviews existing books ISBN data if needing update, every configured duration time
+func EvaluateISBNs() {
+	log.Println(" [*] - Waiting for book updates...")
+	url := fmt.Sprintf("%s/isbn/incomplete", appServer)
+
+	for {
+		go func() {
+			books, err := getBooks(url)
+
+			if err != nil {
+				log.Printf("Error retrieving books data: %v", err)
+			}
+
+			for _, book := range books.Books {
+				err := bookToCSV(book)
+
+				if err != nil {
+					log.Printf("Error updating CSV data: %v \n", err)
+					return
+				}
+			}
+		}()
+
+		time.Sleep(duration)
+	}
+}
+
+// getBooks returns book data response
+func getBooks(url string) (model.BooksResponse, error) {
+	var books model.BooksResponse
+
+	res, err := http.Get(url)
+	if err != nil {
+		return model.BooksResponse{}, err
+	}
+
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		return model.BooksResponse{}, err
+	}
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return model.BooksResponse{}, err
+	}
+
+	err = json.Unmarshal(body, &books)
+
+	if err != nil {
+		return model.BooksResponse{}, err
+	}
+
+	return books, nil
+}
+
+// bookToCSV updates new book data to CSV
+func bookToCSV(book model.Book) error {
 	if book.ISBN10 == "" {
 		isbn10, err := isbn.ToISBN10(book.ISBN13)
 
@@ -56,7 +127,7 @@ func UpdateISBNs(data []byte) error {
 
 	newData := []string{
 		book.Title,
-		formatAuthors(book.Authors),
+		util.FormatAuthors(book.Authors),
 		book.ISBN13,
 		book.ISBN10,
 		fmt.Sprint(book.PublicationYear),
@@ -65,12 +136,13 @@ func UpdateISBNs(data []byte) error {
 		fmt.Sprint(int(book.ListPrice)),
 	}
 
-	err = writer.WriteCsv(newData, csvFile, header)
+	err := writer.WriteCsv(newData, csvFile, header)
 
 	if err != nil {
 		return err
 	}
 
+	log.Printf("Updated ISBNs for: %s \n", book.Title)
 	return nil
 }
 
@@ -105,24 +177,4 @@ func updateBook(book model.Book) {
 	}
 
 	log.Printf("Successfully edited ISBN for %s", book.Title)
-}
-
-// formatAuthors formats Book  authors to a single string presentation
-func formatAuthors(authors []*model.Author) string {
-	var authorList []string
-
-	for _, a := range authors {
-		middleName := a.MiddleName
-
-		if middleName == "" {
-			middleName = " "
-		} else {
-			middleName = fmt.Sprintf(" %s ", middleName)
-		}
-
-		author := a.FirstName + middleName + a.LastName
-		authorList = append(authorList, author)
-	}
-
-	return strings.Join(authorList, ", ")
 }
