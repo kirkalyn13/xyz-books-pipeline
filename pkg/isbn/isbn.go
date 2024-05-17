@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// ToISBN13 converts ISBN10 to ISBN13
 func ToISBN13(isbn10 string) (string, error) {
 	isbn10 = strings.ReplaceAll(isbn10, "-", "")
 	isbn10 = strings.ReplaceAll(isbn10, " ", "")
@@ -27,6 +28,7 @@ func ToISBN13(isbn10 string) (string, error) {
 	return isbn13, nil
 }
 
+// ToISBN10 converts ISBN13 to ISBN10
 func ToISBN10(isbn13 string) (string, error) {
 	isbn13 = strings.ReplaceAll(isbn13, "-", "")
 	isbn13 = strings.ReplaceAll(isbn13, " ", "")
@@ -55,6 +57,7 @@ func ToISBN10(isbn13 string) (string, error) {
 	return isbn10, nil
 }
 
+// checkDigitISBN13 returns the corresponding ISBN13 check digit
 func checkDigitISBN13(isbnSubstr string) (int, error) {
 	checkDigit := 0
 
@@ -75,6 +78,7 @@ func checkDigitISBN13(isbnSubstr string) (int, error) {
 	return checkDigit, nil
 }
 
+// checkDigitISBN10 returns the corresponding ISBN10 check digit
 func checkDigitISBN10(isbnSubstr string) (int, error) {
 	checkDigit := 0
 

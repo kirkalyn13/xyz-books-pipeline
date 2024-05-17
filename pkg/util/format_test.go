@@ -1,4 +1,4 @@
-package service
+package util
 
 import (
 	"testing"
@@ -14,7 +14,7 @@ func TestFormatAuthors(t *testing.T) {
 	}
 
 	expected := "John Doe, Jane A. Smith, Alice B. Johnson"
-	result := formatAuthors(authors)
+	result := FormatAuthors(authors)
 
 	if result != expected {
 		t.Errorf("Test Failed: Expected: %s, Got: %s", expected, result)
