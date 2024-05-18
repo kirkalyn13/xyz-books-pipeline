@@ -38,7 +38,7 @@ func UpdateISBNs(data []byte) error {
 
 	log.Printf("Received: ID: %v, Title: %s, ISBN13: %s, ISBN10: %s \n", book.ID, book.Title, book.ISBN13, book.ISBN10)
 
-	err = bookToCSV(book)
+	err = bookToCSV(book, csvFile)
 
 	if err != nil {
 		return err
@@ -61,7 +61,7 @@ func EvaluateISBNs() {
 			}
 
 			for _, book := range books.Books {
-				err := bookToCSV(book)
+				err := bookToCSV(book, csvFile)
 
 				if err != nil {
 					log.Printf("Error updating CSV data: %v \n", err)
@@ -104,7 +104,7 @@ func getBooks(url string) (model.BooksResponse, error) {
 }
 
 // bookToCSV updates new book data to CSV
-func bookToCSV(book model.Book) error {
+func bookToCSV(book model.Book, csvFile string) error {
 	if book.ISBN10 == "" {
 		isbn10, err := isbn.ToISBN10(book.ISBN13)
 
