@@ -1,2 +1,4 @@
 book-data.csv
 main.exe
+
+internal/writer/test-fixtures/*

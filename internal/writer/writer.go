@@ -7,10 +7,6 @@ import (
 	"time"
 )
 
-var (
-// header = []string{"timestamp", "title", "authors", "isbn13", "isbn10", "publicationYear", "publisher", "edition", "price"}
-)
-
 // WriteCsv writes new data to data CSV File
 func WriteCsv(newData []string, csvFile string, header []string) error {
 	if !dataCsvExists(csvFile) {
