@@ -57,6 +57,8 @@ func EvaluateISBNs(wg *sync.WaitGroup) {
 	url := fmt.Sprintf("%s/isbn/incomplete", appServer)
 
 	for {
+		time.Sleep(duration)
+
 		go func() {
 			books, err := getBooks(url)
 
@@ -73,8 +75,6 @@ func EvaluateISBNs(wg *sync.WaitGroup) {
 				}
 			}
 		}()
-
-		time.Sleep(duration)
 	}
 }
 
