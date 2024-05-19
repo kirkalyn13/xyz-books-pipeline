@@ -2,12 +2,16 @@ package mq
 
 import (
 	"log"
+	"sync"
 
 	"github.com/kirkalyn13/xyz-books-pipeline/pkg/service"
 	"github.com/streadway/amqp"
 )
 
-func InitSubscriber(queueName string) {
+func InitSubscriber(queueName string, wg *sync.WaitGroup) {
+	wg.Add(1)
+	defer wg.Done()
+
 	conn, err := amqp.Dial(Server)
 
 	if err != nil {

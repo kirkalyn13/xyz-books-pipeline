@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"sync"
 	"time"
 
 	"github.com/kirkalyn13/xyz-books-pipeline/internal/writer"
@@ -48,7 +49,10 @@ func UpdateISBNs(data []byte) error {
 }
 
 // EvaluateISBNs reviews existing books ISBN data if needing update, every configured duration time
-func EvaluateISBNs() {
+func EvaluateISBNs(wg *sync.WaitGroup) {
+	wg.Add(1)
+	defer wg.Done()
+
 	log.Println(" [*] - Waiting for book updates...")
 	url := fmt.Sprintf("%s/isbn/incomplete", appServer)
 
