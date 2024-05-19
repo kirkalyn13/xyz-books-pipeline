@@ -4,7 +4,7 @@
 XYZ Books Pipeline to check and update incoming ISBNs from newly added books from the CRUD UI, and record new data to a CSV file.
 
 ## Prerequisites
-- Golang
+- Golang 1.22
 - XYZ AppServer and Rabbit MQ Instance
 
 ## Usage
