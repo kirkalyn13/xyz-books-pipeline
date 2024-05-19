@@ -22,10 +22,11 @@ Thus, the pipeline primarily operates using the RabbitMQ instance, but should al
 
 1. Clone repository.
 2. Navigate to the root folder of the project.
-3. Run `go build cmd/main.go`. This should generate the executable.
-4. Run `./main` on the folder where the executable is located (preferrably the root folder of the project).
-5. Alternatively, if you have Golang installed on your machine, you can simply run `go run cmd/main.go` from the project root folder.
-6. The output CSV file can be found on `/xyz-books-pipeline/output/book-data.csv` .
+3. Run `go mod tidy`.
+4. Run `go build cmd/main.go`. This should generate the executable.
+5. Run `./main` on the folder where the executable is located (preferrably the root folder of the project).
+6. Alternatively, if you have Golang installed on your machine, you can simply run `go run cmd/main.go` from the project root folder.
+7. The output CSV file can be found on `/xyz-books-pipeline/output/book-data.csv` .
 
 **Note:** If the Rabbit MQ instance is up and running and messages are queued, the pipeline may need to restart to start receiving the queued messages.
 
