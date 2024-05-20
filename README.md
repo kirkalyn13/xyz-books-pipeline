@@ -5,7 +5,7 @@ XYZ Books Pipeline to check and update incoming ISBNs from newly added books fro
 
 ## Prerequisites
 - Golang 1.22
-- XYZ AppServer and Rabbit MQ Instance
+- XYZ App Server and Rabbit MQ Instance
 
 ## Usage
 
